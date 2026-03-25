@@ -1,0 +1,21 @@
+required_columns:
+  - date
+  - value
+
+optional_columns:
+  - region
+  - country
+  - metric_name
+  - source_file
+
+date:
+  type: datetime
+  format: iso
+
+value:
+  type: float
+
+frequency:
+  allowed:
+    - weekly
+    - monthly
