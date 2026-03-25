@@ -1,5 +1,5 @@
-raw_root: "raw"
-processed_root: "processed"
+raw_root: "C:/Users/Empok/Documents/GitHub/Sofie/Data/raw"
+processed_root: "C:/Users/Empok/Documents/GitHub/Sofie/Data/processed"
 
 weekly_folder: "weekly"
 monthly_folder: "monthly"
