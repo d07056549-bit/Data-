@@ -37,19 +37,18 @@ def merge_into_spine(spine, df):
 def main():
     spine = build_spine()
 
-    # Path to your processed weekly mobility dataset
+    # 1. Merge mobility dataset
     mobility_path = Path(
         r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\weekly\Black Swan\Global_Mobility_Report.parquet"
     )
-
-    # Load and prefix the dataset
     mobility = load_and_prefix(mobility_path, "mobility")
-
-    # Merge into the spine
     spine = merge_into_spine(spine, mobility)
+
+    # 2. Merge all ACLED weekly datasets
+    spine = merge_acled_weekly(spine)
 
     # Show results
     print(spine.head(10))
     print(spine.tail(10))
-    print(f"Columns now in spine: {list(spine.columns)}")
+    print(f"Total columns now in spine: {len(spine.columns)}")
 
