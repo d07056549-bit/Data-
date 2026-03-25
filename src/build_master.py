@@ -1,11 +1,20 @@
 import pandas as pd
 from pathlib import Path
 
-def build_spine():
-    spine = pd.DataFrame(
-        index=pd.date_range("1980-01-01", "2030-12-31", freq="W-MON")
+def merge_acled_weekly(spine):
+    acled_dir = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\weekly\Conflict\ACLED"
     )
-    spine.index.name = "date"
+
+    for file in acled_dir.glob("*.parquet"):
+        region_name = file.stem.split("_")[0].lower().replace("-", "_")
+        prefix = f"acled_{region_name}"
+
+        print(f"Merging ACLED weekly dataset: {file.name} as prefix '{prefix}'")
+
+        df = load_and_prefix(file, prefix)
+        spine = merge_into_spine(spine, df)
+
     return spine
 
 
