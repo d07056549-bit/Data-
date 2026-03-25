@@ -76,6 +76,33 @@ def merge_monthly(spine):
 
     return spine
 
+def merge_yearly(spine):
+    yearly_dir = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\years"
+    )
+
+    for file in yearly_dir.rglob("*.parquet"):
+        parts = file.parts
+        folder = parts[-2].lower().replace(" ", "_")
+        name = file.stem.lower().replace("-", "_")
+
+        # Avoid collisions with weekly/monthly
+        prefix = f"{folder}_{name}_yearly"
+
+        print(f"Merging YEARLY dataset: {file.name} as prefix '{prefix}'")
+
+        df = load_and_prefix(file, prefix)
+
+        # Ensure datetime index
+        df.index = pd.to_datetime(df.index)
+
+        # Forward-fill yearly values into weekly spine
+        df = df.reindex(spine.index, method="ffill")
+
+        spine = spine.join(df, how="left")
+
+    return spine
+
 def load_and_prefix(path, prefix):
     df = pd.read_parquet(path)
     df = df.add_prefix(prefix + "_")
@@ -113,6 +140,9 @@ def main():
 
     # 5. Merge monthly dataset
     spine = merge_monthly(spine)
+
+    # 6. Merge yearly dataset
+    spine = merge_yearly(spine)
 
 
     # Show results
