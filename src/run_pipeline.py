@@ -23,8 +23,21 @@ def main():
     for f in files:
         logger.info(f"Processing {f}")
         result = harmonize_single_file(f, settings, logger)
-        if result is None:
-            continue
+if result is None:
+    continue
+
+rel_path = f.relative_to(raw_root)
+
+# Handle YEAR-only datasets
+if result.get("is_year_only"):
+    save_yearly(
+        result["yearly"],
+        processed_root,
+        rel_path
+    )
+    logger.info(f"Saved YEAR-only dataset for {f}")
+    continue
+
 
         rel_path = f.relative_to(raw_root)
         save_harmonized(
