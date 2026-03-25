@@ -219,8 +219,8 @@ def main():
     # 3. Create master_feature_list.txt
     # -----------------------------
     with open(feature_list_path, "w", encoding="utf-8") as f:
-    for col in spine.columns:
-        f.write(col + "\n")
+        for col in spine.columns:
+            f.write(col + "\n")
 
     print(f"Feature list saved to: {feature_list_path}")
 
