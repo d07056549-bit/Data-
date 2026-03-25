@@ -10,7 +10,7 @@ def list_data_files(root, exts=(".csv", ".xlsx", ".xls")):
 
 def load_table(path):
     if path.suffix.lower() == ".csv":
-        return pd.read_csv(path)
+        return pd.read_csv(path, dtype=str, low_memory=False)
     return pd.read_excel(path)
 
 def ensure_dir(path):
