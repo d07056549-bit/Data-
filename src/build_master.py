@@ -152,6 +152,78 @@ def main():
 spine.to_parquet(output_path)
 print(f"Master sheet saved to: {output_path}")
 
+    # ---------------------------------------------------------
+    # Generate documentation files for the master dataset
+    # ---------------------------------------------------------
+
+    # Paths for documentation files
+    docs_dir = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master"
+    )
+    metadata_path = docs_dir / "master_metadata.json"
+    schema_path = docs_dir / "master_schema.json"
+    feature_list_path = docs_dir / "master_feature_list.txt"
+
+    # -----------------------------
+    # 1. Create master_metadata.json
+    # -----------------------------
+    metadata = {
+        "name": "Global Master Dataset",
+        "version": "1.0.0",
+        "created_at": pd.Timestamp.now().isoformat(),
+        "frequency": "weekly",
+        "rows": len(spine),
+        "columns": len(spine.columns),
+        "date_range": {
+            "start": str(spine.index.min().date()),
+            "end": str(spine.index.max().date())
+        },
+        "description": "Unified weekly dataset combining conflict, mobility, geopolitical risk, macroeconomic, demographic, environmental, and structural indicators.",
+        "sources": {
+            "weekly": ["Google Mobility", "ACLED", "UCDP", "GPR"],
+            "monthly": ["ACLED Monthly", "UCDP Monthly", "GPR Monthly", "Mobility Monthly"],
+            "yearly": ["World Bank", "UNHCR", "OWID", "Environmental", "Demographic"]
+        },
+        "processing": {
+            "weekly": "Direct merge",
+            "monthly": "Forward-fill to weekly",
+            "yearly": "Forward-fill to weekly",
+            "index": "Weekly (W-MON)"
+        }
+    }
+
+    import json
+    with open(metadata_path, "w") as f:
+        json.dump(metadata, f, indent=4)
+
+    print(f"Metadata saved to: {metadata_path}")
+
+    # -----------------------------
+    # 2. Create master_schema.json
+    # -----------------------------
+    schema = {}
+    for col in spine.columns:
+        schema[col] = {
+            "dtype": str(spine[col].dtype),
+            "source": col.split("_")[0],  # prefix-based inference
+            "description": "",
+            "units": "",
+            "notes": ""
+        }
+
+    with open(schema_path, "w") as f:
+        json.dump(schema, f, indent=4)
+
+    print(f"Schema saved to: {schema_path}")
+
+    # -----------------------------
+    # 3. Create master_feature_list.txt
+    # -----------------------------
+    with open(feature_list_path, "w") as f:
+        for col in spine.columns:
+            f.write(col + "\n")
+
+    print(f"Feature list saved to: {feature_list_path}")
 
 
     # Show results
