@@ -16,7 +16,7 @@ numeric_column_patterns:
   - "events"
 
 weekly_frequency: "W-MON"
-monthly_frequency: "M"
+monthly_frequency: "ME"
 
 default_region_column_candidates:
   - country
