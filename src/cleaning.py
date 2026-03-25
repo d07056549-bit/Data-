@@ -33,7 +33,6 @@ def find_date_column(df, candidates):
 def standardize_date_index(df, date_col):
     df = df.copy()
 
-    # Robust, warning‑free date parsing
     df[date_col] = pd.to_datetime(
         df[date_col],
         errors="coerce",
@@ -59,7 +58,6 @@ def detect_numeric_columns(df, patterns):
         if any(p in col_lower for p in patterns):
             numeric_cols.append(col)
 
-    # Fallback: use all numeric dtypes
     if not numeric_cols:
         numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
 
@@ -71,12 +69,9 @@ def detect_numeric_columns(df, patterns):
 # ---------------------------------------------------------
 def clean_numeric_column(series):
     s = series.astype(str)
-
-    # Remove commas, <, >, spaces
     s = s.str.replace(",", "", regex=False)
     s = s.str.replace(r"[<>]", "", regex=True)
     s = s.str.strip()
-
     return pd.to_numeric(s, errors="coerce")
 
 
