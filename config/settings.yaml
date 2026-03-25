@@ -13,16 +13,9 @@ numeric_column_patterns:
   - "count"
   - "value"
   - "fatalit"
-  - "events"
+  - "event"
 
 weekly_frequency: "W-MON"
 monthly_frequency: "ME"
-
-default_region_column_candidates:
-  - country
-  - Country
-  - state
-  - region
-  - Region
 
 timezone: "UTC"
