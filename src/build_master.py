@@ -33,6 +33,18 @@ def merge_ucdp_weekly(spine):
 
     return spine
 
+def merge_gpr_weekly(spine):
+    gpr_path = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\weekly\Events\Geopolitical Risk\data_gpr_export.parquet"
+    )
+
+    print(f"Merging GPR weekly dataset: {gpr_path.name} as prefix 'gpr'")
+
+    df = load_and_prefix(gpr_path, "gpr")
+    spine = merge_into_spine(spine, df)
+
+    return spine
+
 
 
 def load_and_prefix(path, prefix):
@@ -66,6 +78,9 @@ def main():
 
      # 3. Merge all UCDP weekly datasets
     spine = merge_ucdp_weekly(spine)
+
+    # 4. Merge GPR weekly dataset
+    spine = merge_gpr_weekly(spine)
 
     # Show results
     print(spine.head(10))
