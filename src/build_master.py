@@ -149,17 +149,16 @@ def main():
     r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master\master.parquet"
 )
 
-spine.to_parquet(output_path)
-print(f"Master sheet saved to: {output_path}")
+    spine.to_parquet(output_path)
+    print(f"Master sheet saved to: {output_path}")
 
     # ---------------------------------------------------------
     # Generate documentation files for the master dataset
     # ---------------------------------------------------------
-
-    # Paths for documentation files
     docs_dir = Path(
         r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master"
     )
+
     metadata_path = docs_dir / "master_metadata.json"
     schema_path = docs_dir / "master_schema.json"
     feature_list_path = docs_dir / "master_feature_list.txt"
