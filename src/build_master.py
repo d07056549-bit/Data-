@@ -143,6 +143,15 @@ def main():
 
     # 6. Merge yearly dataset
     spine = merge_yearly(spine)
+    
+    # SAVE MASTER SHEET
+    output_path = Path(
+    r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master\master_weekly.parquet"
+)
+
+spine.to_parquet(output_path)
+print(f"Master sheet saved to: {output_path}")
+
 
 
     # Show results
