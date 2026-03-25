@@ -6,18 +6,17 @@ def find_date_column(df, candidates):
         if cand.lower() in cols_lower:
             return cols_lower[cand.lower()]
     for c in df.columns:
-        try:
-df[date_col] = pd.to_datetime(
-    df[date_col],
-    errors="coerce",
-    dayfirst=True,
-    infer_datetime_format=True
-)
 
-            return c
-        except Exception:
-            continue
+try:
+    df[date_col] = pd.to_datetime(
+        df[date_col],
+        errors="coerce",
+        dayfirst=True,
+        infer_datetime_format=True
+    )
+except Exception:
     return None
+
 
 def standardize_date_index(df, date_col):
     df = df.copy()
