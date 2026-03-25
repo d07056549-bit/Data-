@@ -92,3 +92,9 @@ def save_harmonized(weekly, monthly, processed_root, weekly_folder, monthly_fold
 
     weekly.to_parquet(weekly_dir / (rel_path.stem + ".parquet"))
     monthly.to_parquet(monthly_dir / (rel_path.stem + ".parquet"))
+
+def save_yearly(df_year, processed_root, rel_path):
+    yearly_dir = Path(processed_root) / "years" / rel_path.parent
+    ensure_dir(yearly_dir)
+    df_year.to_parquet(yearly_dir / (rel_path.stem + ".parquet"))
+
