@@ -192,7 +192,7 @@ def main():
     }
 
     import json
-    with open(metadata_path, "w") as f:
+    with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=4)
 
     print(f"Metadata saved to: {metadata_path}")
@@ -210,7 +210,7 @@ def main():
             "notes": ""
         }
 
-    with open(schema_path, "w") as f:
+    with open(schema_path, "w", encoding="utf-8") as f:
         json.dump(schema, f, indent=4)
 
     print(f"Schema saved to: {schema_path}")
@@ -218,9 +218,9 @@ def main():
     # -----------------------------
     # 3. Create master_feature_list.txt
     # -----------------------------
-    with open(feature_list_path, "w") as f:
-        for col in spine.columns:
-            f.write(col + "\n")
+    with open(feature_list_path, "w", encoding="utf-8") as f:
+    for col in spine.columns:
+        f.write(col + "\n")
 
     print(f"Feature list saved to: {feature_list_path}")
 
