@@ -33,17 +33,30 @@ def find_date_column(df, candidates):
 def standardize_date_index(df, date_col):
     df = df.copy()
 
-    df[date_col] = pd.to_datetime(
-        df[date_col],
-        errors="coerce",
-        dayfirst=True,
-    )
+    # Detect ISO format (YYYY-MM-DD)
+    sample = df[date_col].astype(str).dropna().iloc[0]
+
+    if sample.count("-") == 2 and len(sample.split("-")[0]) == 4:
+        # ISO format → safe to parse without dayfirst
+        df[date_col] = pd.to_datetime(
+            df[date_col],
+            errors="coerce",
+            dayfirst=False
+        )
+    else:
+        # Ambiguous formats → use dayfirst=True
+        df[date_col] = pd.to_datetime(
+            df[date_col],
+            errors="coerce",
+            dayfirst=True
+        )
 
     df = df.dropna(subset=[date_col])
     df = df.set_index(date_col).sort_index()
     df.index.name = "date"
 
     return df
+
 
 
 # ---------------------------------------------------------
