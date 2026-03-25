@@ -7,7 +7,7 @@ def find_date_column(df, candidates):
             return cols_lower[cand.lower()]
     for c in df.columns:
         try:
-    df[date_col] = pd.to_datetime(
+df[date_col] = pd.to_datetime(
     df[date_col],
     errors="coerce",
     dayfirst=True,
