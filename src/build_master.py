@@ -17,7 +17,7 @@ def merge_acled_weekly(spine):
         region_name = file.stem.split("_")[0].lower().replace("-", "_")
         prefix = f"acled_{region_name}"
 
-        print(f"Merging ACLED weekly dataset: {file.name} as prefix '{prefix}'")
+        print(f"Merging ACLED weekly dataset: {file.name} as  '{prefix}'")
 
         df = load_and_prefix(file, prefix)
         spine = merge_into_spine(spine, df)
@@ -58,20 +58,18 @@ def merge_monthly(spine):
     )
 
     for file in monthly_dir.rglob("*.parquet"):
-        # Create a prefix based on folder + filename
         parts = file.parts
         folder = parts[-2].lower().replace(" ", "_")
         name = file.stem.lower().replace("-", "_")
-        prefix = f"{folder}_{name}"
+
+        # FIX: ensure monthly columns never collide with weekly ones
+        prefix = f"{folder}_{name}_monthly"
 
         print(f"Merging MONTHLY dataset: {file.name} as prefix '{prefix}'")
 
         df = load_and_prefix(file, prefix)
 
-        # Ensure index is datetime
         df.index = pd.to_datetime(df.index)
-
-        # Forward-fill monthly values into weekly spine
         df = df.reindex(spine.index, method="ffill")
 
         spine = spine.join(df, how="left")
