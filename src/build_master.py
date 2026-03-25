@@ -1,6 +1,13 @@
 import pandas as pd
 from pathlib import Path
 
+def build_spine():
+    spine = pd.DataFrame(
+        index=pd.date_range("1980-01-01", "2030-12-31", freq="W-MON")
+    )
+    spine.index.name = "date"
+    return spine
+
 def merge_acled_weekly(spine):
     acled_dir = Path(
         r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\weekly\Conflict\ACLED"
@@ -86,4 +93,7 @@ def main():
     print(spine.head(10))
     print(spine.tail(10))
     print(f"Total columns now in spine: {len(spine.columns)}")
+
+if __name__ == "__main__":
+    main()
 
