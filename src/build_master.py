@@ -52,7 +52,31 @@ def merge_gpr_weekly(spine):
 
     return spine
 
+def merge_monthly(spine):
+    monthly_dir = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\monthly"
+    )
 
+    for file in monthly_dir.rglob("*.parquet"):
+        # Create a prefix based on folder + filename
+        parts = file.parts
+        folder = parts[-2].lower().replace(" ", "_")
+        name = file.stem.lower().replace("-", "_")
+        prefix = f"{folder}_{name}"
+
+        print(f"Merging MONTHLY dataset: {file.name} as prefix '{prefix}'")
+
+        df = load_and_prefix(file, prefix)
+
+        # Ensure index is datetime
+        df.index = pd.to_datetime(df.index)
+
+        # Forward-fill monthly values into weekly spine
+        df = df.reindex(spine.index, method="ffill")
+
+        spine = spine.join(df, how="left")
+
+    return spine
 
 def load_and_prefix(path, prefix):
     df = pd.read_parquet(path)
@@ -88,6 +112,10 @@ def main():
 
     # 4. Merge GPR weekly dataset
     spine = merge_gpr_weekly(spine)
+
+    # 5. Merge monthly dataset
+    spine = merge_monthly(spine)
+
 
     # Show results
     print(spine.head(10))
