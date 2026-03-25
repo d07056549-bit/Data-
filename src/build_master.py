@@ -7,6 +7,23 @@ def build_spine():
     spine.index.name = "date"
     return spine
 
+from pathlib import Path
+
+def load_and_prefix(path, prefix):
+    df = pd.read_parquet(path)
+    df = df.add_prefix(prefix + "_")
+
+    def merge_into_spine(spine, df):
+    # Align on date index
+    df = df.copy()
+    df.index = pd.to_datetime(df.index)
+    df = df.sort_index()
+
+    # Join onto the spine
+    return spine.join(df, how="left")
+
+    return df
+
 def main():
     spine = build_spine()
     print(spine.head())
