@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 
 def build_spine():
     spine = pd.DataFrame(
@@ -7,13 +8,14 @@ def build_spine():
     spine.index.name = "date"
     return spine
 
-from pathlib import Path
 
 def load_and_prefix(path, prefix):
     df = pd.read_parquet(path)
     df = df.add_prefix(prefix + "_")
+    return df
 
-    def merge_into_spine(spine, df):
+
+def merge_into_spine(spine, df):
     # Align on date index
     df = df.copy()
     df.index = pd.to_datetime(df.index)
@@ -22,13 +24,13 @@ def load_and_prefix(path, prefix):
     # Join onto the spine
     return spine.join(df, how="left")
 
-    return df
 
 def main():
     spine = build_spine()
     print(spine.head())
     print(spine.tail())
     print(f"Spine length: {len(spine)}")
+
 
 if __name__ == "__main__":
     main()
