@@ -1,0 +1,28 @@
+raw_root: "raw"
+processed_root: "processed"
+
+weekly_folder: "weekly"
+monthly_folder: "monthly"
+
+date_column_candidates:
+  - date
+  - Date
+  - DATE
+
+numeric_column_patterns:
+  - "count"
+  - "value"
+  - "fatalit"
+  - "events"
+
+weekly_frequency: "W-MON"
+monthly_frequency: "M"
+
+default_region_column_candidates:
+  - country
+  - Country
+  - state
+  - region
+  - Region
+
+timezone: "UTC"
