@@ -14,19 +14,18 @@ def find_date_column(df, candidates):
     # Second: try to detect any column that can be parsed as dates
     for c in df.columns:
         try:
+            # Try parsing WITHOUT infer_datetime_format
             pd.to_datetime(
                 df[c],
                 errors="raise",
-                dayfirst=True,
-                infer_datetime_format=True
+                dayfirst=True
             )
             return c
         except Exception:
             continue
 
     return None
-
-
+    
 # ---------------------------------------------------------
 # 2. Standardize the date index
 # ---------------------------------------------------------
