@@ -17,6 +17,23 @@ def merge_acled_weekly(spine):
 
     return spine
 
+def merge_ucdp_weekly(spine):
+    ucdp_dir = Path(
+        r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\weekly\Conflict\UCDP"
+    )
+
+    for file in ucdp_dir.glob("*.parquet"):
+        # Use filename stem as prefix, cleaned
+        prefix = "ucdp_" + file.stem.lower().replace("-", "_")
+
+        print(f"Merging UCDP weekly dataset: {file.name} as prefix '{prefix}'")
+
+        df = load_and_prefix(file, prefix)
+        spine = merge_into_spine(spine, df)
+
+    return spine
+
+
 
 def load_and_prefix(path, prefix):
     df = pd.read_parquet(path)
@@ -46,6 +63,9 @@ def main():
 
     # 2. Merge all ACLED weekly datasets
     spine = merge_acled_weekly(spine)
+
+     # 3. Merge all UCDP weekly datasets
+    spine = merge_ucdp_weekly(spine)
 
     # Show results
     print(spine.head(10))
