@@ -146,7 +146,7 @@ def main():
     
     # SAVE MASTER SHEET
     output_path = Path(
-    r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master\master_weekly.parquet"
+    r"C:\Users\Empok\Documents\GitHub\Sofie\Data\processed\master\master.parquet"
 )
 
 spine.to_parquet(output_path)
