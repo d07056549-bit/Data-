@@ -37,7 +37,6 @@ def standardize_date_index(df, date_col):
         df[date_col],
         errors="coerce",
         dayfirst=True,
-        infer_datetime_format=True
     )
 
     df = df.dropna(subset=[date_col])
