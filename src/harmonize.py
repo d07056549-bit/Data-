@@ -24,9 +24,42 @@ def harmonize_single_file(path, settings, logger):
         return None
 
     date_col = find_date_column(df, settings["date_column_candidates"])
-    if not date_col:
-        logger.warning(f"No date column in {path}, skipping.")
-        return None
+
+# ---------------------------------------------------------
+# 1. If no date column → check for YEAR-only dataset
+# ---------------------------------------------------------
+if not date_col:
+    # Look for a 'year' column
+    year_cols = [c for c in df.columns if c.lower() == "year"]
+
+    if year_cols:
+        df_year = df.copy()
+        df_year["year"] = pd.to_numeric(df_year[year_cols[0]], errors="coerce")
+        df_year = df_year.dropna(subset=["year"])
+        df_year["year"] = df_year["year"].astype(int)
+
+        return {
+            "yearly": df_year,
+            "is_year_only": True
+        }
+
+    logger.info(f"Skipping non-time-series file: {path}")
+    return None
+
+# ---------------------------------------------------------
+# 2. If date column exists but contains only years
+# ---------------------------------------------------------
+if df[date_col].astype(str).str.match(r"^\d{4}$").all():
+    df_year = df.copy()
+    df_year["year"] = pd.to_numeric(df_year[date_col], errors="coerce")
+    df_year = df_year.dropna(subset=["year"])
+    df_year["year"] = df_year["year"].astype(int)
+
+    return {
+        "yearly": df_year,
+        "is_year_only": True
+    }
+
 
     df = standardize_date_index(df, date_col)
     if df.empty:
