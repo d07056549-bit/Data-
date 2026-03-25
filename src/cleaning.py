@@ -1,47 +1,84 @@
 import pandas as pd
 
+# ---------------------------------------------------------
+# 1. Identify the date column
+# ---------------------------------------------------------
 def find_date_column(df, candidates):
     cols_lower = {c.lower(): c for c in df.columns}
+
+    # First: try explicit candidate names
     for cand in candidates:
         if cand.lower() in cols_lower:
             return cols_lower[cand.lower()]
-    for c in df.columns:
 
-try:
+    # Second: try to detect any column that can be parsed as dates
+    for c in df.columns:
+        try:
+            pd.to_datetime(
+                df[c],
+                errors="raise",
+                dayfirst=True,
+                infer_datetime_format=True
+            )
+            return c
+        except Exception:
+            continue
+
+    return None
+
+
+# ---------------------------------------------------------
+# 2. Standardize the date index
+# ---------------------------------------------------------
+def standardize_date_index(df, date_col):
+    df = df.copy()
+
+    # Robust, warning‑free date parsing
     df[date_col] = pd.to_datetime(
         df[date_col],
         errors="coerce",
         dayfirst=True,
         infer_datetime_format=True
     )
-except Exception:
-    return None
 
-
-def standardize_date_index(df, date_col):
-    df = df.copy()
-    df[date_col] = pd.to_datetime(df[date_col], errors="coerce", dayfirst=True)
     df = df.dropna(subset=[date_col])
     df = df.set_index(date_col).sort_index()
     df.index.name = "date"
+
     return df
 
+
+# ---------------------------------------------------------
+# 3. Detect numeric columns
+# ---------------------------------------------------------
 def detect_numeric_columns(df, patterns):
     numeric_cols = []
+
     for col in df.columns:
         col_lower = col.lower()
         if any(p in col_lower for p in patterns):
             numeric_cols.append(col)
+
+    # Fallback: use all numeric dtypes
     if not numeric_cols:
         numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+
     return numeric_cols
 
+
+# ---------------------------------------------------------
+# 4. Clean numeric columns
+# ---------------------------------------------------------
 def clean_numeric_column(series):
     s = series.astype(str)
+
+    # Remove commas, <, >, spaces
     s = s.str.replace(",", "", regex=False)
     s = s.str.replace(r"[<>]", "", regex=True)
     s = s.str.strip()
+
     return pd.to_numeric(s, errors="coerce")
+
 
 def clean_numeric_columns(df, numeric_cols):
     df = df.copy()
@@ -49,8 +86,11 @@ def clean_numeric_columns(df, numeric_cols):
         df[col] = clean_numeric_column(df[col])
     return df
 
+
+# ---------------------------------------------------------
+# 5. Add provenance metadata
+# ---------------------------------------------------------
 def add_provenance(df, source_file):
     df = df.copy()
     df["source_file"] = source_file
     return df
-
